@@ -1,0 +1,5 @@
+target 'HomeMonitor' do
+    use_frameworks!
+    xcodeproj '../HomeMonitor.xcodeproj'
+    pod 'Gloss', '~> 0.7.4'
+end

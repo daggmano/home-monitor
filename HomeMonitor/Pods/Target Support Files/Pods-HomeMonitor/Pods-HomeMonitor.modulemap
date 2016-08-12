@@ -1,0 +1,6 @@
+framework module Pods_HomeMonitor {
+  umbrella header "Pods-HomeMonitor-umbrella.h"
+
+  export *
+  module * { export * }
+}
