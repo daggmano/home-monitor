@@ -23,7 +23,7 @@
 		518BF7991D5B4B7C0053D591 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		518BF79F1D5B52460053D591 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		518BF7A11D5CA9BE0053D591 /* Actron6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Actron6.swift; sourceTree = "<group>"; };
-		518BF7A31D5CABDE0053D591 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		518BF7A31D5CABDE0053D591 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		518BF7A51D5CB56F0053D591 /* Pods */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Pods; sourceTree = "<group>"; };
 		51EE04401D5D9A2C00883D22 /* InverterRealTimeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InverterRealTimeData.swift; sourceTree = "<group>"; };
 		51EE04421D5DD1D400883D22 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };

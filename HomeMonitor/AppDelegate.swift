@@ -16,10 +16,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var statusMenu: NSMenu!
     
     let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(NSVariableStatusItemLength)
-    var temperature: Float = 0.0;
-    var power: String = "-- (--)";
+    var temperature: Float = 0.0
+    var power: String = "-- (--)"
     
-    var tempTimer: NSTimer!;
+    var tempTimer: NSTimer!
+    var powerTimer: NSTimer!
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
@@ -31,8 +32,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = statusMenu
         
         tempTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.downloadTemperature), userInfo: nil, repeats: true)
+        powerTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.downloadPower), userInfo: nil, repeats: true)
         
         downloadTemperature()
+        downloadPower()
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {
@@ -51,7 +54,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func updateText() {
-        statusItem.title = " \(temperature.string(1))\u{00B0}C \(power)"
+        statusItem.title = " \(temperature.string(1))\u{00B0}C / \(power)"
     }
     
     
@@ -114,6 +117,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     return
                 }
                 
+                print(json)
+                
                 guard let powerData = InverterRealTimeData(json: json!) else {
                     print("Error initializing object")
                     return
@@ -125,7 +130,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     return
                 }
                 
-                let formattedPower = "\(currentPower.value!.string(0))\(currentPower.unit) (\(dayPower.value!.string(0))\(dayPower.unit))"
+                let formattedPower = "\(currentPower.value!.string(0))\(currentPower.unit!) (\(dayPower.value!.string(0))\(dayPower.unit!))"
                 self.updatePower(formattedPower)
             }
         }

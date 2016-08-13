@@ -50,7 +50,7 @@ public struct InverterRealTimeDataDetail : Decodable {
     
     public init?(json: JSON) {
         unit = "Unit" <~~ json
-        value = "Values" <~~ json
+        value = "Value" <~~ json
     }
 }
 
