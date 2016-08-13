@@ -69,6 +69,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let task = session.dataTaskWithRequest(urlRequest) {
             (data, response, error) -> Void in
             
+            if (response == nil) {
+                return
+            }
+
             let httpResponse = response as! NSHTTPURLResponse
             let statusCode = httpResponse.statusCode
             
@@ -105,6 +109,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let task = session.dataTaskWithRequest(urlRequest) {
             (data, response, error) -> Void in
             
+            if (response == nil) {
+                return
+            }
+
             let httpResponse = response as! NSHTTPURLResponse
             let statusCode = httpResponse.statusCode
             
