@@ -15,40 +15,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet weak var statusMenu: NSMenu!
     
-    let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(NSVariableStatusItemLength)
+    let statusItem = NSStatusBar.system().statusItem(withLength: NSVariableStatusItemLength)
     var temperature: Float = 0.0
     var power: String = "-- (--)"
     
-    var tempTimer: NSTimer!
-    var powerTimer: NSTimer!
+    var tempTimer: Timer!
+    var powerTimer: Timer!
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
         
         let icon = NSImage(named: "home_logo")
-        icon?.template = true // best for dark mode
+        icon?.isTemplate = true // best for dark mode
         statusItem.image = icon
         
         statusItem.menu = statusMenu
         
-        tempTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.downloadTemperature), userInfo: nil, repeats: true)
-        powerTimer = NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.downloadPower), userInfo: nil, repeats: true)
+        tempTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(AppDelegate.downloadTemperature), userInfo: nil, repeats: true)
+        powerTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(AppDelegate.downloadPower), userInfo: nil, repeats: true)
         
         downloadTemperature()
         downloadPower()
     }
 
-    func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
         tempTimer.invalidate()
     }
     
-    func updateTemperature(value: Float) {
+    func updateTemperature(_ value: Float) {
         self.temperature = value
         self.updateText()
     }
     
-    func updatePower(value: String) {
+    func updatePower(_ value: String) {
         self.power = value
         self.updateText()
     }
@@ -58,68 +58,68 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     
-    @IBAction func onQuit(sender: AnyObject) {
+    @IBAction func onQuit(_ sender: AnyObject) {
         exit(0)
     }
     
     func downloadTemperature() {
-        let requestURL: NSURL = NSURL(string: "http://10.0.0.97/6.json")!
-        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: requestURL)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(urlRequest) {
+        let requestURL: URL = URL(string: "http://10.0.0.97/6.json")!
+        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(url: requestURL)
+        let session = URLSession.shared
+        let task = session.dataTask(with: urlRequest as URLRequest, completionHandler: {
             (data, response, error) -> Void in
             
             if (response == nil) {
                 return
             }
 
-            let httpResponse = response as! NSHTTPURLResponse
+            let httpResponse = response as! HTTPURLResponse
             let statusCode = httpResponse.statusCode
             
             if (statusCode == 200) {
                 var json: [String: AnyObject]!
                 do {
-                    json = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject]
+                    json = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions()) as? [String: AnyObject]
                 } catch {
-                    print(error)
+                    //print(error)
                     return
                 }
                 
                 guard let actron6 = Actron6(json: json!) else {
-                    print("Error initializing object")
+                    //print("Error initializing object")
                     return
                 }
                 
                 guard let roomTemp = actron6.roomTemp else {
-                    print("Unable to get room temp")
+                    //print("Unable to get room temp")
                     return
                 }
                     
                 self.updateTemperature(roomTemp)
             }
-        }
+        }) 
         
         task.resume()
     }
     
     func downloadPower() {
-        let requestURL: NSURL = NSURL(string: "http://10.0.0.92/solar_api/v1/GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData")!
-        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: requestURL)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(urlRequest) {
+        let requestURL: URL = URL(string: "http://10.0.0.92/solar_api/v1/GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData")!
+        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(url: requestURL)
+        let session = URLSession.shared
+        let task = session.dataTask(with: urlRequest as URLRequest, completionHandler: {
             (data, response, error) -> Void in
             
             if (response == nil) {
                 return
             }
 
-            let httpResponse = response as! NSHTTPURLResponse
+            let httpResponse = response as! HTTPURLResponse
             let statusCode = httpResponse.statusCode
             
             if (statusCode == 200) {
                 var json: [String: AnyObject]!
                 do {
-                    json = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions()) as? [String: AnyObject]
+                    json = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions()) as? [String: AnyObject]
                 } catch {
                     print(error)
                     return
@@ -141,7 +141,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 let formattedPower = "\(currentPower.value!.string(0))\(currentPower.unit!) (\(dayPower.value!.string(0))\(dayPower.unit!))"
                 self.updatePower(formattedPower)
             }
-        }
+        }) 
         
         task.resume()
     }
@@ -149,10 +149,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 extension Float {
-    func string(fractionDigits:Int) -> String {
-        let formatter = NSNumberFormatter()
+    func string(_ fractionDigits:Int) -> String {
+        let formatter = NumberFormatter()
         formatter.minimumFractionDigits = fractionDigits
         formatter.maximumFractionDigits = fractionDigits
-        return formatter.stringFromNumber(self) ?? "\(self)"
+        return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
     }
 }
